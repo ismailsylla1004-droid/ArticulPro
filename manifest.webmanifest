@@ -1,0 +1,15 @@
+{
+  "name": "ArticulPro - Prononciation & Grammaire",
+  "short_name": "ArticulPro",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F4F7FA",
+  "theme_color": "#0063B0",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3050/3050525.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
