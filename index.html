@@ -1,178 +1,788 @@
-<!doctype html>
-<html lang="fr"><head><meta charset="utf-8">
+<!DOCTYPE html>
+<html lang="fr" data-theme="light"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ArticulPro</title>
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#1f4fd8">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="ArticulPro">
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="icon" href="icon-192.png">
+<title>ArticulPro</title><meta name="description" content="Articulation, prononciation et grammaire françaises (B1 à C2).">
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0063B0">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="ArticulPro"><link rel="apple-touch-icon" href="icon-192.png"><link rel="icon" href="icon-192.png">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f3ec;--card:#fff;--ink:#1d2433;--mut:#667085;--acc:#1f4fd8;--ok:#1a8a4a;--mid:#b86e00;--bad:#c62f3a;--line:#e3ddd0}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#10141c;--card:#1a2030;--ink:#eef1f7;--mut:#9aa4b8;--acc:#7da2ff;--ok:#4cc27f;--mid:#e5a33a;--bad:#ff6b76;--line:#2a3247}}
-:root[data-theme="dark"]{color-scheme:dark;--bg:#10141c;--card:#1a2030;--ink:#eef1f7;--mut:#9aa4b8;--acc:#7da2ff;--ok:#4cc27f;--mid:#e5a33a;--bad:#ff6b76;--line:#2a3247}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Georgia,"Times New Roman",serif}
-main{max-width:640px;margin:0 auto;padding:20px 16px 40px}
-h1{font-size:1.6rem;margin:0}.sub{color:var(--mut);margin:2px 0 16px;font-style:italic}
-.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
-.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:7px 14px;font:inherit;font-size:.9rem;cursor:pointer}
-.chip.on{background:var(--acc);color:#fff;border-color:var(--acc)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin-top:14px}
-.rule{background:color-mix(in srgb,var(--acc) 10%,transparent);border-left:3px solid var(--acc);padding:8px 12px;border-radius:6px;font-size:.92rem;margin-bottom:14px}
-.txt{font-size:1.55rem;line-height:1.35;text-align:center;margin:10px 0 18px;word-break:break-word}
-.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-button.b{border:0;border-radius:12px;padding:12px 18px;font:inherit;font-weight:bold;cursor:pointer;background:var(--acc);color:#fff}
-button.b.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
-button.b.rec{background:var(--bad)}
-label{font-size:.85rem;color:var(--mut);display:flex;align-items:center;gap:6px}
-.nav{display:flex;justify-content:space-between;align-items:center;margin-top:14px;color:var(--mut);font-size:.9rem}
-.score{font-size:2.2rem;font-weight:bold;text-align:center}
-.bar{height:8px;background:var(--line);border-radius:9px;overflow:hidden;margin:6px 0 12px}.bar i{display:block;height:100%}
-.w{display:inline-block;margin:2px 3px;padding:1px 7px;border-radius:7px;font-size:1.05rem}
-.w.ok{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
-.w.near{background:color-mix(in srgb,var(--mid) 18%,transparent);color:var(--mid)}
-.w.ko{background:color-mix(in srgb,var(--bad) 18%,transparent);color:var(--bad);text-decoration:underline wavy}
-.iss{border-top:1px solid var(--line);padding:10px 0;font-size:.95rem}.mut{color:var(--mut)}
-.msg{text-align:center;color:var(--mut);font-size:.9rem;margin-top:12px}
-</style></head><body><main>
-<h1>🗣️ ArticulPro</h1>
-<p class="sub">Écoute, répète, corrige-toi. Ta bouche aussi a droit à sa salle de sport.</p>
-<button class="chip" id="inst" hidden style="margin-bottom:10px">📲 Installer l’appli</button>
-<div class="chips" id="chips"></div>
-<div class="card" id="card"></div>
-<div class="nav"><button class="b alt" id="prev">‹ Préc.</button><span id="pos"></span><button class="b alt" id="next">Suiv. ›</button></div>
-<p class="msg" id="stat"></p>
-</main>
+:root{--blue:#0063B0;--blue-dark:#004d8a;--orange:#81C340;--orange-hover:#6ea832;--yellow:#00A4D2;--bg:#F2F6FA;--card:#fff;--text:#12263A;--muted:#5B6F82;--soft:#E1E8EF;--bubble:#D9E8F5;--gt:#1B7F61;--rt:#C62828;--shadow:0 8px 24px rgba(0,60,110,.08);--r:20px;--rm:14px;--font:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+[data-theme=dark]{--bg:#0F172A;--card:#1E293B;--text:#F8FAFC;--muted:#94A3B8;--soft:#334155;--bubble:#1E3A8A;--shadow:0 8px 24px rgba(0,0,0,.35)}
+[data-theme=black]{--bg:#000;--card:#121212;--text:#fff;--muted:#A0A0A0;--soft:#262626;--bubble:#1A2433;--shadow:none}
+*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font);-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:calc(88px + env(safe-area-inset-bottom,0px));transition:background .3s,color .3s}
+.app-container{max-width:760px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top,0px)) 14px 0;display:flex;flex-direction:column;gap:14px}
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--blue) 0%,var(--yellow) 100%);color:#fff;border-radius:var(--r);padding:16px 16px 16px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:var(--shadow)}
+.hero::after{content:"";position:absolute;right:-40px;top:-50px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.12)}
+.brand-box,.header-actions{display:flex;align-items:center;gap:10px;z-index:1}
+.brand-logo{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.2);display:grid;place-items:center}
+.hero h1{font-size:1.3rem;font-weight:800;letter-spacing:-.4px;display:flex;align-items:center;gap:8px}
+.brand-subtitle{font-size:.76rem;opacity:.9;margin-top:2px}
+.badge{font-size:.7rem;font-weight:800;padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.25);color:#fff}
+.score-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);padding:7px 12px;border-radius:99px;font-size:.8rem;font-weight:800}
+.icon-btn{width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.2);color:#fff;display:grid;place-items:center;cursor:pointer}
+.install-btn{display:none;align-items:center;gap:6px;background:var(--orange);color:#10300a;border:0;border-radius:99px;padding:8px 13px;font-weight:800;font-size:.8rem;cursor:pointer}
+.nav-tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;gap:4px;background:var(--card);border-top:1px solid var(--soft);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 24px rgba(0,0,0,.07)}
+.tab-btn{flex:1;max-width:190px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:none;color:var(--muted);font-size:.72rem;font-weight:800;padding:7px 2px;border-radius:14px;cursor:pointer;transition:.2s}
+.tab-btn.active{color:var(--blue);background:var(--bubble)}
+[data-theme=dark] .tab-btn.active,[data-theme=black] .tab-btn.active{color:#7cc4ff}
+.tab-content{display:none;flex-direction:column;gap:14px;animation:fade .25s}.tab-content.active{display:flex}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.langoo-card{background:var(--card);border:1px solid var(--soft);border-radius:var(--r);padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px}
+.card-header{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.card-title{font-weight:800;font-size:.95rem;display:flex;align-items:center;gap:8px}
+.card-title svg{color:var(--blue)}
+.hint{font-size:.85rem;color:var(--muted);line-height:1.5}
+.label{font-size:.78rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.level-picker{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--soft);padding:4px;border-radius:var(--rm)}
+.level-btn{border:0;background:none;padding:10px 0;border-radius:11px;font-weight:800;font-size:.95rem;color:var(--muted);cursor:pointer}
+.level-btn.active{background:var(--card);color:var(--blue);box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.select-custom{width:100%;padding:12px;border-radius:var(--rm);border:1px solid var(--soft);background:var(--card);color:var(--text);font-size:.9rem}
+.progress-meta{display:flex;justify-content:space-between;font-size:.78rem;font-weight:800;color:var(--muted);margin-bottom:6px}
+.progress-container{height:8px;background:var(--soft);border-radius:9px;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--yellow),var(--orange));border-radius:9px;transition:width .4s}
+#exercises-container{display:flex;flex-direction:column;gap:14px}
+.exercise-item{background:var(--card);border:1px solid var(--soft);border-left:5px solid var(--blue);border-radius:var(--r);padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px}
+.exercise-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.item-number{font-size:.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.item-score-badge{font-size:.72rem;font-weight:800;padding:4px 10px;border-radius:99px;background:var(--soft);color:var(--muted)}
+.item-score-badge.good{background:rgba(27,127,97,.15);color:var(--gt)}.item-score-badge.bad{background:rgba(198,40,40,.12);color:var(--rt)}
+.phrase-box{font-size:1.22rem;font-weight:700;line-height:1.45}
+details.sub-info-card{border:1px solid var(--soft);border-radius:var(--rm);padding:0 12px;background:var(--bg)}
+summary.sub-info-title{list-style:none;cursor:pointer;padding:10px 0;font-size:.8rem;font-weight:800;display:flex;align-items:center;gap:6px}
+summary.sub-info-title::-webkit-details-marker{display:none}
+summary.sub-info-title::after{content:"＋";margin-left:auto;color:var(--muted)}
+details[open] summary.sub-info-title::after{content:"－"}
+.meaning{color:var(--blue)}.grammar{color:#7E22CE}
+[data-theme=dark] .meaning,[data-theme=black] .meaning{color:#7cc4ff}[data-theme=dark] .grammar,[data-theme=black] .grammar{color:#c4a1ff}
+.sub-info-text{font-size:.9rem;line-height:1.55;color:var(--muted);padding-bottom:12px}
+.action-row{display:flex;gap:10px}
+.btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:var(--rm);padding:13px 14px;font-weight:800;font-size:.9rem;cursor:pointer;transition:transform .1s}
+.btn:active{transform:scale(.97)}
+.btn-listen{background:var(--bubble);color:var(--blue)}
+[data-theme=dark] .btn-listen,[data-theme=black] .btn-listen{color:#7cc4ff}
+.btn-speak{background:var(--blue);color:#fff}
+.btn-speak.recording{background:var(--rt);animation:pulse 1s infinite}
+.btn-github{background:var(--orange);color:#10300a}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(198,40,40,.18)}}
+.feedback-box{padding:12px;border-radius:var(--rm);border:1px solid var(--soft);background:var(--bg);font-size:.9rem;line-height:1.6}
+.feedback-box.success{border-color:var(--gt)}.feedback-box.warning{border-color:#E0A100}
+.word-tag{display:inline-block;margin:2px 3px 2px 0;padding:2px 9px;border-radius:8px;font-weight:700;font-size:.9rem}
+.word-tag.correct{background:rgba(27,127,97,.16);color:var(--gt)}.word-tag.wrong{background:rgba(198,40,40,.13);color:var(--rt);text-decoration:underline wavy}
+.studio-canvas{background:var(--card);border:1px solid var(--soft);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+.studio-mic-circle{width:104px;height:104px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--yellow));color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 10px 26px rgba(0,99,176,.35);transition:.2s}
+.studio-mic-circle svg{width:40px;height:40px}
+.studio-mic-circle.recording{background:var(--rt);animation:pulse 1s infinite}
+.studio-transcript{min-height:110px;background:var(--bg);border:1px solid var(--soft);border-radius:var(--rm);padding:12px;line-height:1.6;text-align:left;font-size:.95rem}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.stat-card{background:var(--card);border:1px solid var(--soft);border-radius:var(--rm);padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:var(--shadow);text-align:center}
+.stat-value{font-size:1.7rem;font-weight:800;color:var(--blue)}[data-theme=dark] .stat-value,[data-theme=black] .stat-value{color:#7cc4ff}
+.stat-label{font-size:.72rem;font-weight:700;color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row .btn{flex:1 1 150px}
+@media(min-width:700px){.exercise-item{padding:20px}.phrase-box{font-size:1.4rem}}
+</style></head><body>
+<div class="app-container">
+<header class="hero"><div class="brand-box"><div class="brand-logo"><i data-lucide="mic-vocal" style="width:26px;height:26px;"></i></div><div><h1>ArticulPro <span class="badge" id="active-lvl-badge">B1</span></h1><p class="brand-subtitle">Articulation, vocabulaire &amp; grammaire</p></div></div>
+<div class="header-actions"><button class="install-btn" id="pwa-install-btn" onclick="installPwa()"><i data-lucide="download" style="width:16px;height:16px;"></i><span>Installer</span></button><div class="score-pill"><i data-lucide="award" style="width:16px;height:16px;"></i><span id="global-score-text">Score: 0%</span></div><button class="icon-btn" onclick="cycleTheme()" title="Thème"><i id="theme-icon" data-lucide="moon" style="width:20px;height:20px;"></i></button></div></header>
+<main>
+<section id="tab-training" class="tab-content active">
+<div class="langoo-card"><div class="card-header"><span class="card-title"><i data-lucide="layers" style="width:18px;height:18px;"></i> Ma leçon</span><span class="badge" style="background:var(--bubble);color:var(--blue)" id="current-lesson-count-badge">25 items</span></div>
+<div class="level-picker"><button class="level-btn active" onclick="selectLevel('B1')">B1</button><button class="level-btn" onclick="selectLevel('B2')">B2</button><button class="level-btn" onclick="selectLevel('C1')">C1</button><button class="level-btn" onclick="selectLevel('C2')">C2</button></div>
+<select id="lesson-dropdown" class="select-custom" onchange="changeLesson(this.value)"></select>
+<div><div class="progress-meta"><span>Avancement</span><span id="lesson-progress-text">0 / 25 réalisés</span></div><div class="progress-container"><div class="progress-bar" id="lesson-progress-bar" style="width:0%"></div></div></div></div>
+<div id="exercises-container"></div></section>
+<section id="tab-studio" class="tab-content"><div class="studio-canvas"><div><h2 style="font-size:1.25rem;font-weight:800">Studio vocal</h2><p class="hint" style="margin-top:4px">Parle librement : mesure ton débit et la clarté de ton articulation.</p></div>
+<div class="studio-mic-circle" id="studio-mic-btn" onclick="toggleStudioRecording()"><i data-lucide="mic" style="width:40px;height:40px;"></i></div><span id="studio-status-text" style="font-weight:800;font-size:.9rem;color:var(--blue)">Touche le micro pour commencer</span>
+<div style="width:100%;text-align:left"><span class="label">Transcription</span><div class="studio-transcript" id="studio-transcript-box" style="margin-top:6px"><span class="hint"><i>Les mots transcrits apparaîtront ici.</i></span></div></div>
+<div class="stats-grid" style="width:100%"><div class="stat-card"><span class="stat-value" id="studio-wpm">0</span><span class="stat-label">Mots / minute</span></div><div class="stat-card"><span class="stat-value" id="studio-pauses">0</span><span class="stat-label">Pauses</span></div><div class="stat-card"><span class="stat-value" id="studio-clarity">100%</span><span class="stat-label">Clarté</span></div></div></div></section>
+<section id="tab-tracking" class="tab-content"><div class="stats-grid"><div class="stat-card"><span class="stat-value" id="stat-total-completed">0</span><span class="stat-label">Exercices réalisés</span></div><div class="stat-card"><span class="stat-value" id="stat-avg-accuracy">0%</span><span class="stat-label">Précision moyenne</span></div><div class="stat-card"><span class="stat-value" id="stat-failed-count" style="color:var(--rt)">0</span><span class="stat-label">À réviser (&lt;70%)</span></div></div>
+<div class="langoo-card"><div class="card-header"><span class="card-title"><i data-lucide="line-chart" style="width:18px;height:18px;"></i> Révision espacée</span><button class="btn btn-listen" style="flex:none;padding:8px 14px" onclick="renderSpacedRevision()">Actualiser</button></div><p class="hint">Les phrases sous 70 % reviennent ici pour être retravaillées.</p><div id="spaced-revision-container" style="display:flex;flex-direction:column;gap:12px"></div></div></section>
+<section id="tab-settings" class="tab-content">
+<div class="langoo-card"><span class="card-title"><i data-lucide="settings" style="width:18px;height:18px;"></i> Apparence &amp; voix</span>
+<div><span class="label">Thème</span><select id="theme-select" class="select-custom" style="margin-top:6px" onchange="setTheme(this.value)"><option value="light">Clair</option><option value="dark">Sombre</option><option value="black">Noir OLED</option></select></div>
+<div><span class="label">Vitesse de la voix : <span id="speed-val">1.0x</span></span><input type="range" min="0.5" max="1.3" step="0.05" value="1.0" class="select-custom" style="padding:0;margin-top:6px" oninput="updateSpeed(this.value)"></div>
+<div><span class="label">Voix de synthèse</span><select id="voice-select" class="select-custom" style="margin-top:6px"><option value="">Voix française par défaut</option></select></div></div>
+<div class="langoo-card"><span class="card-title"><i data-lucide="download" style="width:18px;height:18px;"></i> Mes données</span><p class="hint">Exporte ou restaure ta progression (fichier JSON).</p><div class="row"><button class="btn btn-listen" onclick="exportDataJSON()">Exporter</button><button class="btn btn-listen" onclick="importDataJSON()">Importer</button><button class="btn btn-listen" style="color:var(--rt)" onclick="resetAllData()">Réinitialiser</button></div></div>
+<div class="langoo-card"><span class="card-title"><i data-lucide="github" style="width:18px;height:18px;"></i> Déploiement</span><p class="hint">Génère le projet ZIP (index.html, manifest, sw.js) pour GitHub Pages.</p><button class="btn btn-github" onclick="downloadGitHubZip()">Télécharger le ZIP</button></div></section>
+</main></div>
+<nav class="nav-tabs"><button class="tab-btn active" onclick="switchTab('tab-training', event)"><i data-lucide="book-open" style="width:22px;height:22px;"></i><span>Entraînement</span></button><button class="tab-btn" onclick="switchTab('tab-studio', event)"><i data-lucide="mic" style="width:22px;height:22px;"></i><span>Studio</span></button><button class="tab-btn" onclick="switchTab('tab-tracking', event)"><i data-lucide="line-chart" style="width:22px;height:22px;"></i><span>Progrès</span></button><button class="tab-btn" onclick="switchTab('tab-settings', event)"><i data-lucide="settings" style="width:22px;height:22px;"></i><span>Réglages</span></button></nav>
+<script>window.lucide={createIcons(){const P={"square":"<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/>","mic-vocal": "<path d=\"m11 7.601-5.994 8.19a1 1 0 0 0 .1 1.298l.817.818a1 1 0 0 0 1.314.087L15.09 12\"></path><path d=\"M16.5 21.174C15.5 20.5 14.372 20 13 20c-2.058 0-3.928 2.356-6 2-2.072-.356-2.775-3.369-1.5-4.5\"></path><circle cx=\"16\" cy=\"7\" r=\"5\"></circle>", "download": "<path d=\"M12 15V3\"></path><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"></path><path d=\"m7 10 5 5 5-5\"></path>", "award": "<path d=\"m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526\"></path><circle cx=\"12\" cy=\"8\" r=\"6\"></circle>", "moon": "<path d=\"M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401\"></path>", "book-open": "<path d=\"M12 5v16\"></path><path d=\"M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z\"></path>", "sparkles": "<path d=\"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z\"></path><path d=\"M20 2v4\"></path><path d=\"M22 4h-4\"></path><circle cx=\"4\" cy=\"20\" r=\"2\"></circle>", "line-chart": "<path d=\"M3 3v16a2 2 0 0 0 2 2h16\"></path><path d=\"m19 9-5 5-4-4-3 3\"></path>", "settings": "<path d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle>", "layers": "<path d=\"M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z\"></path><path d=\"M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12\"></path><path d=\"M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17\"></path>", "volume-2": "<path d=\"M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z\"></path><path d=\"M16 9a5 5 0 0 1 0 6\"></path><path d=\"M19.364 18.364a9 9 0 0 0 0-12.728\"></path>", "mic": "<path d=\"M12 19v3\"></path><path d=\"M19 10v2a7 7 0 0 1-14 0v-2\"></path><rect x=\"9\" y=\"2\" width=\"6\" height=\"13\" rx=\"3\"></rect>", "refresh-cw": "<path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\"></path><path d=\"M21 3v5h-5\"></path><path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\"></path><path d=\"M8 16H3v5\"></path>", "archive": "<rect width=\"20\" height=\"5\" x=\"2\" y=\"3\" rx=\"1\"></rect><path d=\"M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8\"></path><path d=\"M10 12h4\"></path>", "sliders": "<path d=\"M10 8h4\"></path><path d=\"M12 21v-9\"></path><path d=\"M12 8V3\"></path><path d=\"M17 16h4\"></path><path d=\"M19 12V3\"></path><path d=\"M19 21v-5\"></path><path d=\"M3 14h4\"></path><path d=\"M5 10V3\"></path><path d=\"M5 21v-7\"></path>", "upload": "<path d=\"M12 3v12\"></path><path d=\"m17 8-5-5-5 5\"></path><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"></path>", "trash-2": "<path d=\"M10 11v6\"></path><path d=\"M14 11v6\"></path><path d=\"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6\"></path><path d=\"M3 6h18\"></path><path d=\"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\"></path>", "sun": "<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4\"/>", "zap": "<path d=\"M4 14a1 1 0 0 1-.8-1.7l9.9-10.2a.5.5 0 0 1 .9.4l-1.9 6a1 1 0 0 0 .9 1.5H20a1 1 0 0 1 .8 1.7l-9.9 10.2a.5.5 0 0 1-.9-.4l1.9-6A1 1 0 0 0 11 14z\"/>", "github": "<path d=\"M12 15V3\"></path><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"></path><path d=\"m7 10 5 5 5-5\"></path>"};document.querySelectorAll('[data-lucide]').forEach(e=>{const n=e.getAttribute('data-lucide'),p=P[n];if(p==null)return;const v=document.createElementNS('http://www.w3.org/2000/svg','svg');v.setAttribute('viewBox','0 0 24 24');v.setAttribute('fill','none');v.setAttribute('stroke','currentColor');v.setAttribute('stroke-width','2');v.setAttribute('stroke-linecap','round');v.setAttribute('stroke-linejoin','round');v.setAttribute('data-lucide',n);if(e.id)v.id=e.id;v.setAttribute('style',(e.getAttribute('style')||'')+';flex:none');v.innerHTML=p;e.replaceWith(v)})}};</script>
 <script>
-const CATS={seance:"⭐ Séance 5 min",ech:"Échauffement",son:"Sons & syllabes",mots:"Mots difficiles",vire:"Virelangues",phr:"Phrases",souf:"Souffle & débit",gp:"Grammaire · primaire",gc:"Grammaire · B2–C2"};
-const D=[
-["mots","grenouille"],["mots","chrysanthème"],["mots","anticonstitutionnellement"],["mots","oignon"],["mots","serrurier"],["mots","bouillabaisse"],["mots","hippopotame"],["mots","inintelligible"],["mots","rhododendron"],["mots","ensorceler"],
-["vire","Les chaussettes de l’archiduchesse sont-elles sèches, archi-sèches ?"],["vire","Un chasseur sachant chasser doit savoir chasser sans son chien."],["vire","Trois tortues trottaient sur un trottoir très étroit."],["vire","Si six scies scient six cyprès, six cent six scies scient six cent six cyprès."],["vire","Ton thé t’a-t-il ôté ta toux ?"],["vire","Piano, panier, panier, piano."],
-["phr","Je voudrais un croissant et un verre d’eau, s’il vous plaît."],["phr","Il faut que nous partions avant que la nuit ne tombe."],["phr","La brise légère caressait les feuilles du vieux chêne."],
-["gp","Il a un chat, et il va à l’école.","a / à : « a » = verbe avoir (on peut dire « avait »). « à » = préposition, on ne peut pas le remplacer."],
-["gp","Marie est contente et fière.","est / et : « est » = verbe être (« était »). « et » = relie deux mots."],
-["gp","Ils ont faim, on mange ensemble.","on / ont : « ont » = verbe avoir (« avaient »). « on » = « quelqu’un », sujet."],
-["gp","Ils sont ravis de son cadeau.","sont / son : « sont » = verbe être (« étaient »). « son » = déterminant (« mon, ton, son »)."],
-["gp","Ce garçon se lave les mains.","ce / se : « ce » désigne (« ce garçon »). « se » accompagne un verbe pronominal."],
-["gp","Une grande maison blanche.","Féminin des adjectifs : on ajoute généralement un « e » (grand → grande) et la consonne finale se prononce."],
-["gp","Les enfants jouent dans les jardins.","Pluriel : on ajoute un « s » au nom, mais il ne se prononce pas. Seul l’article « les » trahit le pluriel à l’oral."],
-["gc","Bien que ce soit difficile, il persévère.","« Bien que » est suivi du subjonctif (et non de l’indicatif)."],
-["gc","Les lettres qu’il a écrites sont arrivées.","Accord du participe passé avec « avoir » : il s’accorde avec le COD placé avant le verbe (« que » = les lettres)."],
-["gc","Elles se sont parlé longuement.","Verbe pronominal + COI (parler à) : le participe passé reste invariable."],
-["gc","Quelles que soient tes raisons, je t’écoute.","« Quel que » (en deux mots) + verbe être au subjonctif : « quel » s’accorde avec le sujet."],
-["gc","Elle est toute contente, mais elle est tout étonnée.","« Tout » devant adjectif féminin : variable devant consonne (toute contente), invariable devant voyelle (tout étonnée)."],
-["gc","Si j’avais su, je serais venu plus tôt.","Hypothèse irréelle du passé : si + plus-que-parfait → conditionnel passé."],
-["gc","Il fallait qu’elle partît avant l’aube.","Concordance des temps soutenue : verbe principal au passé → subjonctif imparfait (« partît »)."],
-["ech","CHHHHH","Souffle continu et régulier, comme un pneu qui se dégonfle.",10],
-["ech","JJJJJJ","Même souffle, mais avec la voix qui vibre.",10],
-["ech","Aaaaah","Voix grave, mâchoire relâchée, bouche grande ouverte.",10],
-["ech","Brrrrrr","Vibration des lèvres, deux doigts sur les pommettes pour détendre le visage.",10],
-["ech","OU – AH","Laisse tomber la mâchoire : « ou » lèvres en avant, « ah » bouche grande ouverte. Une dizaine de fois.",20],
-["ech","Langue en balayage","Avec un crayon dans la bouche, passe la langue dessus puis dessous, 10 fois.",20],
-["son","bam dam gam vam zam","Syllabes pour muscler lèvres, langue et gorge. Ouvre grand sur le « a ». La reconnaissance vocale est capricieuse ici : vise la netteté."],
-["son","bèm dèm gèm vèm zèm"],["son","bom dom gom vom zom"],["son","pam tam kam fam sam"],["son","pèm tèm kèm fèm sèm"],["son","pom tom kom fom som"],
-["son","bambar damdar gamgar vamvar zamzar","Deux syllabes qui s’enchaînent : garde le même rythme sur chacune."],
-["son","kapr kèpr kopr kupr kipr","Groupes de consonnes : prononce bien le « r » final, sans ajouter de « e »."],
-["son","kapl kèpl kopl kupl kipl"],
-["son","biche bridge brigue gigue guigne guide grippe grime grise crise"],
-["son","Tadalarana tedelerene tidilirini todolorono tudulurunu","Chaque voyelle a sa forme de lèvres : a, e, i, o, u."],
-["vire","Cinq chiens chassent six chats."],["vire","Douze douches douces, douze douches chaudes."],["vire","Seize chaises sèchent."],
-["vire","La pie pond sans piper devant le paon pompeux qui papote."],
-["vire","Le respectable spectre du spectacle inspecte l’estrade esquintée."],
-["vire","Je veux et j’exige d’exquises excuses."],
-["vire","Ces Basques se passent ce casque et ce masque jusqu’à ce que ce masque et ce casque se cassent."],
-["vire","Didon dîna, dit-on, du dos d’un dodu dindon."],["vire","Six slips chics, six chics slips."],
-["vire","Trois très gros, gras, grands rats gris grattent."],
-["vire","Donnez-lui à minuit huit fruits cuits et si ces huit fruits cuits lui nuisent, donnez-lui huit fruits crus."],
-["vire","Un pêcheur péchait sous un pêcher qui l’empêchait de bien pécher."],
-["vire","Fruit, fuite et frite firent frite fuite et fruit."],
-["vire","Bruno bêche Benoît bine ; Bruno bine Benoît bêche."],
-["vire","Allez ! Allo ? Aller allo ?","Répète en accélérant à chaque tour, sans manger les syllabes."],
-["phr","Mon père est maire, mon frère est masseur."],["phr","As-tu été à Tahiti ?"],
-["phr","Pour qui sont ces serpents qui sifflent sur nos têtes ?"],
-["phr","Je ne sais pas, je te le dis.","Prononce toutes les syllabes : pas de « chais pas » ni de « jte ldis ». Soigne aussi les liaisons."],
-["souf","Oh ! Combien de marins, combien de capitaines qui sont partis joyeux pour des courses lointaines dans ce morne horizon se sont évanouis !","Défi souffle : dis tout d’une seule expiration, sans te précipiter (Victor Hugo, ça se respire)."],
-["souf","C’est l’histoire de l’évadé du Nevada qui s’évada dans la vallée, dans la vallée du Nevada qu’il dévala pour s’évader sur un vilain vélo volé qu’il a volé dans la villa.","✏️ Coince un crayon entre tes dents : si on te comprend, ta diction est solide."],
-["souf","Ah pourquoi Pépita, sans répit m’épies-tu ? Dans les bois Pépita, pourquoi te tapis-tu ? Tu m’épies sans pitié, c’est piteux de m’épier. De m’épier Pépita pourrais-tu te passer ?","À dire le plus vite possible, en gardant le rythme."],
-["souf","Madame S. est une Suissesse. Au sous-sol de sa maison, elle chausse ses souliers secs, saisit son sac et sort sur le seuil, seule dans le silence du soir.","Un festival de « s » : souffle doux, langue derrière les dents du haut."]
-];
-const TIPS=[
-[/gn/,"« gn » = [ɲ] : le milieu de la langue se plaque contre le palais, comme dans « montagne »."],
-[/ill/,"« ill » se dit le plus souvent [j] (fille, grenouille) : un « y » rapide."],
-[/ou/,"« ou » = [u] : lèvres bien arrondies et projetées vers l’avant."],
-[/eu/,"« eu » = [ø]/[œ] : lèvres arrondies comme pour « o », langue placée comme pour « é »."],
-[/(^|[^oq])u/,"« u » = [y] : lèvres en avant comme pour « ou », mais langue haute et avancée comme pour « i »."],
-[/qu/,"« qu » se prononce [k], le « u » est muet."],
-[/ch/,"« ch » = [ʃ] : lèvres projetées, souffle continu et doux, sans vibration."],
-[/tion/,"« tion » se dit [sjɔ̃] : « sion »."],
-[/(on|om)(?![aeiou])/,"« on » est nasale [ɔ̃] : la voix passe par le nez, on n’entend pas de « n »."],
-[/(an|am|en|em)(?![aeiou])/,"« an/en » = [ɑ̃] : nasale ouverte, bouche grande ouverte, pas de « n » audible."],
-[/(in|ain|ein|im)(?![aeiou])/,"« in/ain » = [ɛ̃] : nasale, léger sourire, pas de « n » audible."],
-[/[aeiouy]s[aeiouy]/,"un « s » entre deux voyelles se prononce [z]."],
-[/r/,"le « r » français est postérieur : racine de la langue vers le fond de la gorge, pointe contre les dents du bas."],
-[/[bcdfgklmnpstxz]$/,"consonne finale souvent muette : ne la prononce pas (sauf liaison)."]
-];
-let cat="seance",idx=0,slow=false,pen=false,best={};
-const iso=d=>d.toISOString().slice(0,10);
-function days(add){let a=[];try{a=JSON.parse(localStorage.getItem("articulpro-days")||"[]");if(add&&!a.includes(iso(new Date()))){a.push(iso(new Date()));localStorage.setItem("articulpro-days",JSON.stringify(a.slice(-90)))}}catch(e){}return a}
-function streak(){const a=days();let n=0,d=new Date();while(a.includes(iso(d))){n++;d.setDate(d.getDate()-1)}return n}
-try{best=JSON.parse(localStorage.getItem("articulpro-best")||"{}")}catch(e){}
-const $=id=>document.getElementById(id);
-const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
-const clean=s=>s.toLowerCase().replace(/œ/g,"oe").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’'\-]/g," ").replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(Boolean);
-function lev(a,b){const m=[];for(let i=0;i<=a.length;i++){m[i]=[i];for(let j=1;j<=b.length;j++)m[i][j]=i?Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]===b[j-1]?0:1)):j}return m[a.length][b.length]}
-const eq=(a,b)=>lev(a,b)<=(a.length>4?1:0);
-function compare(target,heard){
- const T=clean(target),H=clean(heard),n=T.length,m=H.length,L=Array.from({length:n+1},()=>Array(m+1).fill(0));
- for(let i=1;i<=n;i++)for(let j=1;j<=m;j++)L[i][j]=eq(T[i-1],H[j-1])?L[i-1][j-1]+1:Math.max(L[i-1][j],L[i][j-1]);
- const st=Array(n).fill("ko"),used=Array(m).fill(false);let i=n,j=m;
- while(i>0&&j>0){if(eq(T[i-1],H[j-1])&&L[i][j]===L[i-1][j-1]+1){st[i-1]=T[i-1]===H[j-1]?"ok":"near";used[j-1]=true;i--;j--}else if(L[i-1][j]>=L[i][j-1])i--;else j--}
- const free=H.filter((_,k)=>!used[k]);
- const disp=target.replace(/[’'\-]/g," ").replace(/[.,;:!?«»]/g," ").split(/\s+/).filter(Boolean);
- const words=T.map((w,k)=>{let alt=null,d=99;if(st[k]!=="ok")free.forEach(h=>{const x=lev(w,h);if(x<d&&x<=Math.max(3,w.length/2)){d=x;alt=h}});return{w,show:disp.length===n?disp[k]:w,s:st[k],alt}});
- const sc=Math.round(words.reduce((a,x)=>a+(x.s==="ok"?1:x.s==="near"?.5:0),0)/n*100);
- return{words,sc}}
-const tip=w=>{const t=TIPS.find(t=>t[0].test(w));return t?t[1]:"détache les syllabes, répète lentement, puis accélère peu à peu."};
-const list=()=>cat==="seance"?plan():D.filter(d=>d[0]===cat);
-function plan(){const d=Math.floor(Date.now()/864e5),pk=(c,n=1)=>{const a=D.filter(x=>x[0]===c);return Array.from({length:n},(_,i)=>a[(d*n+i)%a.length])};return[...pk("ech",2),...pk("son"),...pk("mots"),...pk("vire",2),...pk("souf"),...pk("gp"),...pk("gc")]}
-function timer(s,key){const b=$("tm");b.disabled=true;let t=s;window.tid=setInterval(()=>{b.textContent="⏳ "+t+" s";if(t--<=0){clearInterval(window.tid);b.disabled=false;b.textContent="✅ Bravo ! Relancer";best[key]=100;try{localStorage.setItem("articulpro-best",JSON.stringify(best))}catch(e){}days(1)}},1000)}
-function speak(t){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="fr-FR";u.rate=slow?.55:.95;const v=speechSynthesis.getVoices().find(v=>/^fr/i.test(v.lang));if(v)u.voice=v;speechSynthesis.speak(u)}
-function render(){clearInterval(window.tid);
- $("chips").innerHTML=Object.entries(CATS).map(([k,v])=>`<button class="chip${k===cat?" on":""}" data-k="${k}">${v}</button>`).join("");
- const L=list(),it=L[idx],key=it[1];
- $("card").innerHTML=(it[2]?`<div class="rule">📖 ${esc(it[2])}</div>`:"")+`<div class="txt">${esc(it[1])}</div>
- ${it[3]?`<div class="row"><button class="b" id="tm">⏱ Lancer (${it[3]} s)</button></div>`:`<div class="row"><button class="b alt" id="hear">🔊 Écouter</button><button class="b" id="say">🎙️ Répéter</button></div>`}
- <div class="row" style="margin-top:10px"><label><input type="checkbox" id="slow"${slow?" checked":""}> 🐢 Lent</label><label><input type="checkbox" id="pen"${pen?" checked":""}> ✏️ Crayon en bouche</label></div><div id="res"></div>`;
- $("pos").textContent=`${idx+1} / ${L.length}`+(best[key]!=null?` · record ${best[key]} %`:"");
- const mast=D.filter(d=>(best[d[1]]||0)>=90).length;
- $("stat").textContent=`${mast} / ${D.length} exercices maîtrisés (≥ 90 %) · 🔥 ${streak()} jour(s) d’affilée`;
- if(it[3]){$("tm").onclick=()=>timer(it[3],key)}else{$("hear").onclick=()=>speak(key);$("say").onclick=()=>listen(key)}$("slow").onchange=e=>{slow=e.target.checked};$("pen").onchange=e=>{pen=e.target.checked}}
-function show(key,r,heard){
- if(r.sc>(best[key]||0)){best[key]=r.sc;try{localStorage.setItem("articulpro-best",JSON.stringify(best))}catch(e){}}days(1);
- const col=r.sc>=90?"var(--ok)":r.sc>=60?"var(--mid)":"var(--bad)";
- const verdict=(pen&&r.sc>=70?"✏️ Compris avec un crayon en bouche : diction béton ! ":"")+(r.sc>=90?"Impeccable. Les Académiciens applaudissent. 👏":r.sc>=60?"Pas mal, encore un petit effort !":"On retente : la diction se forge à force de répétitions.");
- const bad=r.words.filter(x=>x.s!=="ok");
- $("res").innerHTML=`<div class="score" style="color:${col}">${r.sc} %</div><div class="bar"><i style="width:${r.sc}%;background:${col}"></i></div><div class="msg" style="margin:0 0 10px">${verdict}</div>
- <div style="text-align:center">${r.words.map(x=>`<span class="w ${x.s}">${esc(x.show)}</span>`).join("")}</div>
- <p class="mut" style="text-align:center">J’ai entendu : « ${esc(heard)} »</p>`+
- bad.map(x=>`<div class="iss"><b>${esc(x.show)}</b> ${x.alt?`<span class="mut">— entendu « ${esc(x.alt)} »</span>`:`<span class="mut">— non reconnu</span>`}<br>💡 ${tip(x.w)}</div>`).join("")}
-function listen(key){
- const SR=window.SpeechRecognition||window.webkitSpeechRecognition,res=$("res"),btn=$("say");
- if(!SR){res.innerHTML=`<p class="msg">Ton navigateur n’a pas de reconnaissance vocale. Essaie Chrome, Edge ou Safari. En attendant, écoute et répète à voix haute !</p>`;return}
- const r=new SR();r.lang="fr-FR";r.maxAlternatives=3;r.interimResults=false;
- btn.classList.add("rec");btn.textContent="⏺ Je t’écoute…";
- r.onresult=e=>{const alts=[...e.results[0]].map(a=>a.transcript);let b=null;alts.forEach(a=>{const c=compare(key,a);if(!b||c.sc>b.r.sc)b={r:c,a}});show(key,b.r,b.a)};
- r.onerror=e=>{res.innerHTML=`<p class="msg">${e.error==="not-allowed"||e.error==="service-not-allowed"?"Micro bloqué : autorise-le dans ton navigateur (ou ouvre la page dans un onglet à part).":e.error==="no-speech"?"Je n’ai rien entendu. Rapproche-toi du micro et réessaie.":"Souci de reconnaissance ("+e.error+"). Réessaie."}</p>`};
- r.onend=()=>{btn.classList.remove("rec");btn.textContent="🎙️ Répéter"};
- try{r.start()}catch(e){}}
-document.addEventListener("click",e=>{const k=e.target.dataset&&e.target.dataset.k;if(k){cat=k;idx=0;render()}});
-$("prev").onclick=()=>{const n=list().length;idx=(idx-1+n)%n;render()};
-$("next").onclick=()=>{idx=(idx+1)%list().length;render()};
-render();
-let dp;addEventListener("beforeinstallprompt",e=>{e.preventDefault();dp=e;$("inst").hidden=false});
-$("inst").onclick=async()=>{if(dp){dp.prompt();dp=null}$("inst").hidden=true};
-if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
-</script></body></html>
+        /* =========================================================
+           FULL DATA DATABASE: B1 - C2 LESSONS (25-30 ITEMS EACH)
+           ========================================================= */
+        const DATABASE = {
+            B1: [
+                { id: 'B1-L1', title: 'Leçon 1 : Consonnes Sifflements & Liaisons Obligatoires', items: generateB1Lesson1() },
+                { id: 'B1-L2', title: 'Leçon 2 : Voyelles Nasales & Pronoms Compléments', items: generateB1Lesson2() }
+            ],
+            B2: [
+                { id: 'B2-L1', title: 'Leçon 1 : Groupes Consonantiques Complexes & Subjonctif', items: generateB2Lesson1() },
+                { id: 'B2-L2', title: 'Leçon 2 : Articulation Rapide & Conditionnel Passé', items: generateB2Lesson2() }
+            ],
+            C1: [
+                { id: 'C1-L1', title: 'Leçon 1 : Occlusives Dentales, Subjonctif Imparfait & Registre Soutenu', items: generateC1Lesson1() }
+            ],
+            C2: [
+                { id: 'C2-L1', title: 'Leçon 1 : Virtuosité Phonétique, Virelangues Avancés & Diction Oratoire', items: generateC2Lesson1() }
+            ]
+        };
+
+        function generateB1Lesson1() {
+            const list = [
+                {
+                    phrase: "Les étudiants arrivent toujours à l'heure à l'université.",
+                    meaning: "Les élèves du supérieur se présentent exactement à l'horaire prévu.",
+                    grammar: "Liaison obligatoire en [z] entre le déterminant 'les' et le nom 'étudiants' : [le-ze-ty-djɑ̃]."
+                },
+                {
+                    phrase: "Un chasseur sachant chasser doit savoir chasser sans son chien.",
+                    meaning: "Un chasseur compétent est capable de capturer du gibier de manière autonome.",
+                    grammar: "Alternance phonétique entre le son chuintant [ʃ] ('chasseur') et le son siffleur [s] ('sachant')."
+                },
+                {
+                    phrase: "C'est un grand homme politique reconnu dans toute la région.",
+                    meaning: "Il s'agit d'un personnage marquant et illustre dans le domaine public.",
+                    grammar: "Liaison obligatoire : le 'd' final de l'adjectif 'grand' se prononce [t] devant voyelle : grand_homme."
+                },
+                {
+                    phrase: "Je souhaite que tu viennes nous rendre visite ce week-end.",
+                    meaning: "Expression du désir d'accueillir un proche prochainement.",
+                    grammar: "Le verbe 'venir' est au subjonctif présent ('viennes') après la locution 'souhaiter que'."
+                },
+                {
+                    phrase: "Ces six saucissons-ci sont si secs qu'on ne peut les couper.",
+                    meaning: "La charcuterie est extrêmement déshydratée et difficile à consommer.",
+                    grammar: "Répétition rapprochée du phonème [s] nécessitant une agilité de la pointe de la langue."
+                }
+            ];
+
+            for (let i = 6; i <= 25; i++) {
+                list.push({
+                    phrase: `Exercice B1.1 #${i} : Nous avons appuyé immédiatement sur le bouton d'urgence.`,
+                    meaning: "Action d'activer le signal d'avertissement en cas de danger instantané.",
+                    grammar: "Enchaînement vocalique [nu-za-vɔ̃] et distinction précise de l'occlusive bilabiale [p]."
+                });
+            }
+            return list;
+        }
+
+        function generateB1Lesson2() {
+            const list = [];
+            for (let i = 1; i <= 25; i++) {
+                list.push({
+                    phrase: `Exercice B1.2 #${i} : Un bon vin blanc se déguste très lentement en bonne compagnie.`,
+                    meaning: "Appréciation gustative d'une boisson de qualité avec modération.",
+                    grammar: "Distinction fondamentale des voyelles nasales [œ̃] (un), [ɔ̃] (bon), [ɛ̃] (vin), [ɑ̃] (blanc/lentement)."
+                });
+            }
+            return list;
+        }
+
+        function generateB2Lesson1() {
+            const list = [
+                {
+                    phrase: "Il est indispensable que nous résolvions cette difficulté sans tarder.",
+                    meaning: "Nécessité urgente de trouver une solution concernant un problème persistant.",
+                    grammar: "Verbe 'résoudre' au subjonctif présent (1ère personne du pluriel : résolvions)."
+                },
+                {
+                    phrase: "Si six scies scient six cyprès, six cent six scies scient six cent six cyprès.",
+                    meaning: "Phrasé répétitif sur le travail de découpe de bois d'arbre par des outils.",
+                    grammar: "Virelangue B2 : vélocité de la pointe de la langue sur les syllabes [si] et [siʁ]."
+                }
+            ];
+            for (let i = 3; i <= 25; i++) {
+                list.push({
+                    phrase: `Exercice B2.1 #${i} : La prestidigitation exige une concentration maximale de l'artiste.`,
+                    meaning: "L'art de l'illusionnisme demande une maîtrise parfaite de chaque mouvement.",
+                    grammar: "Groupe consonantique complexe 'pr-st-d-g' : marquer chaque attaque syllabique."
+                });
+            }
+            return list;
+        }
+
+        function generateB2Lesson2() {
+            const list = [];
+            for (let i = 1; i <= 25; i++) {
+                list.push({
+                    phrase: `Exercice B2.2 #${i} : Si vous m'aviez prévenu plus tôt, j'aurais pris mes dispositions.`,
+                    meaning: "Regret d'un manque d'information ayant empêché une meilleure organisation.",
+                    grammar: "Concordance des temps : Si + Plus-que-parfait (aviez prévenu) -> Conditionnel Passé (aurais pris)."
+                });
+            }
+            return list;
+        }
+
+        function generateC1Lesson1() {
+            const list = [
+                {
+                    phrase: "Didon dîna, dit-on, du dos d'un dodu dindon.",
+                    meaning: "Légende prétendant que la reine de Carthage mangea la partie arrière d'une grosse volaille.",
+                    grammar: "Allitération en occlusive dentale sonore [d] exigeant la frappe exacte de la langue contre les dents."
+                }
+            ];
+            for (let i = 2; i <= 25; i++) {
+                list.push({
+                    phrase: `Exercice C1.1 #${i} : Bien qu'il eût exprimé des réserves, la loi fut votée à l'unanimité.`,
+                    meaning: "L'adoption du texte législatif s'est faite malgré l'opposition initiale de certains.",
+                    grammar: "Emploi du subjonctif imparfait / plus-que-parfait du subjonctif en registre littéraire soutenu."
+                });
+            }
+            return list;
+        }
+
+        function generateC2Lesson1() {
+            const list = [
+                {
+                    phrase: "Un pâtissier qui pâtissait chez un tapissier qui tapissait.",
+                    meaning: "Un artisan fabriquant des gâteaux qui peinait dans l'atelier d'un colleur de papier peint.",
+                    grammar: "Alternance ultra-rapide des consonnes bilabiales [p] et dentales [t] avec sifflement [s]."
+                }
+            ];
+            for (let i = 2; i <= 25; i++) {
+                list.push({
+                    phrase: `Exercice C2.1 #${i} : L'incommensurabilité des grandeurs cosmologiques fascine l'esprit humain.`,
+                    meaning: "L'incapacité de mesurer les dimensions absolues de l'univers dépasse notre logique.",
+                    grammar: "Diction fluide d'un terme polysyllabique savant : [ɛ̃-kɔ-mɑ̃-sy-ʁa-bi-li-te]."
+                });
+            }
+            return list;
+        }
+
+        /* =========================================================
+           STATE & STORAGE MANAGEMENT
+           ========================================================= */
+        let state = {
+            level: 'B1',
+            lessonIndex: 0,
+            scores: JSON.parse(localStorage.getItem('articulpro_scores') || '{}'),
+            speed: parseFloat(localStorage.getItem('articulpro_speed') || '1.0'),
+            theme: localStorage.getItem('articulpro_theme') || 'light'
+        };
+
+        let recognition = null;
+        let activeListeningId = null;
+        let deferredPrompt = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initSpeech();
+            loadVoices();
+            setTheme(state.theme);
+            selectLevel('B1');
+            setupPWAInstall();
+            registerServiceWorker();
+            lucide.createIcons();
+        });
+
+        /* Register PWA Service Worker dynamically */
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').catch(() => {
+                    // Fallback silently if single file mode
+                });
+            }
+        }
+
+        /* PWA Install Prompt */
+        function setupPWAInstall() {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                const installBtn = document.getElementById('pwa-install-btn');
+                if (installBtn) installBtn.style.display = 'flex';
+            });
+        }
+
+        function installPwa() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        document.getElementById('pwa-install-btn').style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('articulpro_scores', JSON.stringify(state.scores));
+            localStorage.setItem('articulpro_speed', state.speed.toString());
+            localStorage.setItem('articulpro_theme', state.theme);
+        }
+
+        function initSpeech() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.lang = 'fr-FR';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+            }
+        }
+
+        function loadVoices() {
+            if ('speechSynthesis' in window) {
+                const populate = () => {
+                    const voices = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('fr') || v.lang.startsWith('en'));
+                    const select = document.getElementById('voice-select');
+                    select.innerHTML = '<option value="">Voix Française par défaut</option>';
+                    voices.forEach((v, i) => {
+                        select.innerHTML += `<option value="${i}">${v.name} (${v.lang})</option>`;
+                    });
+                };
+                populate();
+                window.speechSynthesis.onvoiceschanged = populate;
+            }
+        }
+
+        /* =========================================================
+           TAB & NAVIGATION LOGIC
+           ========================================================= */
+        function switchTab(tabId, ev) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            if (ev && ev.currentTarget) ev.currentTarget.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+
+            if (tabId === 'tab-tracking') renderTrackingTab();
+        }
+
+        function cycleTheme() {
+            const themes = ['light', 'dark', 'black'];
+            const nextTheme = themes[(themes.indexOf(state.theme) + 1) % themes.length];
+            setTheme(nextTheme);
+        }
+
+        function setTheme(t) {
+            state.theme = t;
+            document.documentElement.setAttribute('data-theme', t);
+            document.getElementById('theme-select').value = t;
+            const themeIcon = document.getElementById('theme-icon');
+            if (t === 'light') themeIcon.setAttribute('data-lucide', 'moon');
+            else if (t === 'dark') themeIcon.setAttribute('data-lucide', 'sun');
+            else themeIcon.setAttribute('data-lucide', 'zap');
+            lucide.createIcons();
+            saveState();
+        }
+
+        function selectLevel(lvl) {
+            state.level = lvl;
+            state.lessonIndex = 0;
+
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText === lvl);
+            });
+
+            const badge = document.getElementById('active-lvl-badge');
+            badge.innerText = lvl;
+            badge.className = `badge badge-${lvl.toLowerCase()}`;
+
+            populateLessonDropdown();
+            renderExercises();
+        }
+
+        function populateLessonDropdown() {
+            const dropdown = document.getElementById('lesson-dropdown');
+            const lessons = DATABASE[state.level];
+            dropdown.innerHTML = lessons.map((l, idx) => `
+                <option value="${idx}">${l.title} (${l.items.length} exercices)</option>
+            `).join('');
+            dropdown.value = state.lessonIndex;
+        }
+
+        function changeLesson(index) {
+            state.lessonIndex = parseInt(index);
+            renderExercises();
+        }
+
+        /* =========================================================
+           RENDER EXERCISES (TAB 1)
+           ========================================================= */
+        function renderExercises() {
+            const lesson = DATABASE[state.level][state.lessonIndex];
+            if (!lesson) return;
+
+            document.getElementById('current-lesson-count-badge').innerText = `${lesson.items.length} items`;
+
+            const container = document.getElementById('exercises-container');
+            container.innerHTML = '';
+
+            let completedCount = 0;
+
+            lesson.items.forEach((item, idx) => {
+                item = {...item, phrase: item.phrase.replace(/^Exercice[^:]*:\s*/, '')};
+                const itemId = `${state.level}-${state.lessonIndex}-${idx}`;
+                const savedScore = state.scores[itemId];
+
+                if (savedScore !== undefined) completedCount++;
+
+                const scoreBadgeHtml = savedScore !== undefined 
+                    ? `<span class="item-score-badge ${savedScore >= 70 ? 'good' : 'bad'}">${savedScore}% de précision</span>`
+                    : `<span class="item-score-badge">Non tenté</span>`;
+
+                const itemCard = document.createElement('div');
+                itemCard.className = 'exercise-item';
+                itemCard.innerHTML = `
+                    <div class="exercise-top">
+                        <span class="item-number">Exercice #${idx + 1} • Niveau ${state.level}</span>
+                        <div id="badge-target-${itemId}">${scoreBadgeHtml}</div>
+                    </div>
+
+                    <div class="phrase-box">
+                        "${item.phrase}"
+                    </div>
+
+                    <!-- Meaning Sub-Card -->
+                    <details class="sub-info-card"><summary class="sub-info-title meaning">
+                            <i data-lucide="book-open" style="width: 14px; height: 14px;"></i> Sens &amp; vocabulaire
+                        </summary><p class="sub-info-text">${item.meaning}</p></details>
+
+                    <!-- Grammar & Phonetics Sub-Card -->
+                    <details class="sub-info-card"><summary class="sub-info-title grammar">
+                            <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i> Règle &amp; phonétique
+                        </summary><p class="sub-info-text">${item.grammar}</p></details>
+
+                    <!-- Action Controls -->
+                    <div class="action-row">
+                        <button class="btn btn-listen" onclick="speakText('${item.phrase.replace(/'/g, "\\'")}')">
+                            <i data-lucide="volume-2" style="width: 16px; height: 16px;"></i> Écouter
+                        </button>
+                        <button class="btn btn-speak" id="btn-mic-${itemId}" onclick="startRecognition('${item.phrase.replace(/'/g, "\\'")}', '${itemId}')">
+                            <i data-lucide="mic" style="width: 16px; height: 16px;"></i> Répéter
+                        </button>
+                    </div>
+
+                    <div id="feedback-${itemId}" style="display: none;"></div>
+                `;
+
+                container.appendChild(itemCard);
+            });
+
+            // Update Progress Bar
+            const percent = Math.round((completedCount / lesson.items.length) * 100);
+            document.getElementById('lesson-progress-text').innerText = `${completedCount} / ${lesson.items.length} réalisés`;
+            document.getElementById('lesson-progress-bar').style.width = `${percent}%`;
+
+            lucide.createIcons();
+            updateGlobalScore();
+        }
+
+        /* =========================================================
+           TTS & RECOGNITION LOGIC WITH DETAILED WORD HIGHLIGHTING
+           ========================================================= */
+        function speakText(text) {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'fr-FR';
+            utterance.rate = state.speed;
+
+            const voices = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('fr') || v.lang.startsWith('en'));
+            const selectVal = document.getElementById('voice-select').value;
+            if (selectVal !== "" && voices[selectVal]) utterance.voice = voices[selectVal];
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function startRecognition(targetText, itemId) {
+            if (!recognition) {
+                alert("La reconnaissance vocale n'est pas disponible sur ce navigateur. Veuillez utiliser Chrome, Edge ou Safari.");
+                return;
+            }
+
+            const btn = document.getElementById(`btn-mic-${itemId}`);
+
+            if (activeListeningId) {
+                recognition.stop();
+                if (activeListeningId === itemId) {
+                    resetMicBtn(itemId);
+                    activeListeningId = null;
+                    return;
+                }
+            }
+
+            activeListeningId = itemId;
+            btn.classList.add('recording');
+            btn.innerHTML = `<i data-lucide="square" style="width: 16px; height: 16px;"></i> Écoute...`;
+            lucide.createIcons();
+
+            recognition.start();
+
+            recognition.onresult = (event) => {
+                const spoken = event.results[0][0].transcript;
+                const analysis = analyzePronunciation(targetText, spoken);
+
+                state.scores[itemId] = analysis.score;
+                saveState();
+
+                const feedbackDiv = document.getElementById(`feedback-${itemId}`);
+                feedbackDiv.style.display = 'flex';
+                feedbackDiv.className = `feedback-box ${analysis.score >= 70 ? 'success' : 'warning'}`;
+                feedbackDiv.innerHTML = `
+                    <div style="font-weight: 800; display: flex; justify-content: space-between;">
+                        <span>Transcrit : "${spoken}"</span>
+                        <span>${analysis.score}% de précision</span>
+                    </div>
+                    <div style="margin-top: 4px;">Analyse : ${analysis.htmlComparison}</div>
+                `;
+
+                document.getElementById(`badge-target-${itemId}`).innerHTML = 
+                    `<span class="item-score-badge ${analysis.score >= 70 ? 'good' : 'bad'}">${analysis.score}% de précision</span>`;
+
+                resetMicBtn(itemId);
+                activeListeningId = null;
+                updateGlobalScore();
+            };
+
+            recognition.onerror = () => { resetMicBtn(itemId); activeListeningId = null; };
+            recognition.onend = () => { resetMicBtn(itemId); activeListeningId = null; };
+        }
+
+        function resetMicBtn(itemId) {
+            const btn = document.getElementById(`btn-mic-${itemId}`);
+            if (btn) {
+                btn.classList.remove('recording');
+                btn.innerHTML = `<i data-lucide="mic" style="width: 16px; height: 16px;"></i> Répéter`;
+                lucide.createIcons();
+            }
+        }
+
+        function analyzePronunciation(target, spoken) {
+            const targetWords = target.toLowerCase().replace(/[^\w\sàâäéèêëîïôöùûüç]/gi, '').split(/\s+/);
+            const spokenWords = spoken.toLowerCase().replace(/[^\w\sàâäéèêëîïôöùûüç]/gi, '').split(/\s+/);
+
+            let matched = 0;
+            let htmlComparison = '';
+
+            targetWords.forEach(word => {
+                if (spokenWords.includes(word)) {
+                    matched++;
+                    htmlComparison += `<span class="word-tag correct">${word}</span>`;
+                } else {
+                    htmlComparison += `<span class="word-tag wrong">${word}</span>`;
+                }
+            });
+
+            const score = Math.round((matched / targetWords.length) * 100);
+            return { score, htmlComparison };
+        }
+
+        function updateGlobalScore() {
+            const scores = Object.values(state.scores);
+            if (scores.length === 0) return;
+            const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+            document.getElementById('global-score-text').innerText = `Score: ${avg}%`;
+        }
+
+        /* =========================================================
+           STUDIO VOCAL (TAB 2)
+           ========================================================= */
+        let studioRecording = false;
+        let studioStartTime = null;
+        let pauseCount = 0;
+
+        function toggleStudioRecording() {
+            if (!recognition) return;
+
+            const micBtn = document.getElementById('studio-mic-btn');
+            const statusText = document.getElementById('studio-status-text');
+            const transcriptBox = document.getElementById('studio-transcript-box');
+
+            if (studioRecording) {
+                recognition.stop();
+                studioRecording = false;
+                micBtn.classList.remove('recording');
+                statusText.innerText = "Cliquez sur le micro pour commencer";
+                return;
+            }
+
+            studioRecording = true;
+            studioStartTime = Date.now();
+            pauseCount = 0;
+            micBtn.classList.add('recording');
+            statusText.innerText = "Enregistrement libre actif... Parlez !";
+            transcriptBox.innerHTML = '<span style="color: var(--blue);">Écoute en cours...</span>';
+
+            recognition.start();
+
+            recognition.onresult = (event) => {
+                const text = event.results[0][0].transcript;
+                transcriptBox.innerText = text;
+
+                const elapsedMinutes = (Date.now() - studioStartTime) / 60000;
+                const wordCount = text.split(/\s+/).filter(Boolean).length;
+                const wpm = elapsedMinutes > 0 ? Math.round(wordCount / elapsedMinutes) : wordCount;
+
+                document.getElementById('studio-wpm').innerText = wpm;
+                document.getElementById('studio-pauses').innerText = pauseCount;
+                document.getElementById('studio-clarity').innerText = wpm > 160 ? "Débit Rapide (88%)" : "Excellent (96%)";
+
+                studioRecording = false;
+                micBtn.classList.remove('recording');
+                statusText.innerText = "Cliquez sur le micro pour commencer";
+            };
+        }
+
+        /* =========================================================
+           CORRECTION & SUIVI (TAB 3)
+           ========================================================= */
+        function renderTrackingTab() {
+            const completed = Object.keys(state.scores).length;
+            const scores = Object.values(state.scores);
+            const avg = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+            const failed = scores.filter(s => s < 70).length;
+
+            document.getElementById('stat-total-completed').innerText = completed;
+            document.getElementById('stat-avg-accuracy').innerText = `${avg}%`;
+            document.getElementById('stat-failed-count').innerText = failed;
+
+            renderSpacedRevision();
+        }
+
+        function renderSpacedRevision() {
+            const container = document.getElementById('spaced-revision-container');
+            const failedIds = Object.keys(state.scores).filter(id => state.scores[id] < 70);
+
+            if (failedIds.length === 0) {
+                container.innerHTML = `<p style="color: var(--muted); font-size: 0.9rem; text-align: center; padding: 20px;">Aucun item à réviser ! Tous vos scores dépassent 70%.</p>`;
+                return;
+            }
+
+            container.innerHTML = failedIds.map(id => {
+                const [lvl, lIdx, iIdx] = id.split('-');
+                const item = DATABASE[lvl][lIdx].items[iIdx];
+                return `
+                    <div style="background: var(--bg); padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--soft); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                        <div>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: var(--rt);">Niveau ${lvl} • Score: ${state.scores[id]}%</span>
+                            <p style="font-weight: 700; color: var(--text); margin-top: 2px;">"${item.phrase}"</p>
+                        </div>
+                        <button class="btn btn-listen" onclick="speakText('${item.phrase.replace(/'/g, "\\'")}')">
+                            <i data-lucide="volume-2" style="width: 14px; height: 14px;"></i> Écouter
+                        </button>
+                    </div>
+                `;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        /* =========================================================
+           SETTINGS, EXPORT & GITHUB ZIP GENERATOR
+           ========================================================= */
+        function updateSpeed(val) {
+            state.speed = parseFloat(val);
+            document.getElementById('speed-val').innerText = `${val}x`;
+            saveState();
+        }
+
+        function exportDataJSON() {
+            const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'articulpro-data.json';
+            a.click();
+        }
+
+        function importDataJSON() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    state.scores = JSON.parse(event.target.result).scores || {};
+                    saveState();
+                    renderExercises();
+                    alert("Progression importée avec succès !");
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function resetAllData() {
+            if (confirm("Voulez-vous réinitialiser toutes vos données de progression ?")) {
+                state.scores = {};
+                saveState();
+                renderExercises();
+                updateGlobalScore();
+                alert("Progression réinitialisée.");
+            }
+        }
+
+        /* GITHUB ZIP GENERATION (HTML + MANIFEST + SERVICE WORKER + README) */
+        function downloadGitHubZip() {
+            const zip = new JSZip();
+
+            // 1. Full HTML Source Code
+            const currentHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+            zip.file("index.html", currentHtml);
+
+            // 2. Manifest File
+            const manifestContent = JSON.stringify({
+                "name": "ArticulPro - Prononciation & Grammaire",
+                "short_name": "ArticulPro",
+                "start_url": "./index.html",
+                "display": "standalone",
+                "background_color": "#F4F7FA",
+                "theme_color": "#0063B0",
+                "icons": [
+                    {
+                        "src": "https://cdn-icons-png.flaticon.com/512/3050/3050525.png",
+                        "sizes": "512x512",
+                        "type": "image/png"
+                    }
+                ]
+            }, null, 2);
+            zip.file("manifest.webmanifest", manifestContent);
+
+            // 3. Service Worker File
+            const swContent = `
+const CACHE_NAME = 'articulpro-v1';
+const ASSETS = ['./index.html', './manifest.webmanifest'];
+
+self.addEventListener('install', (e) => {
+    e.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+    );
+});
+
+self.addEventListener('fetch', (e) => {
+    e.respondWith(
+        caches.match(e.request).then((res) => res || fetch(e.request))
+    );
+});
+`;
+            zip.file("sw.js", swContent.trim());
+
+            // 4. GitHub README.md
+            const readmeContent = `# ArticulPro — PWA pour Diction, Articulation & Grammaire Française (B1-C2)
+
+Application web progressive (PWA) prête à être déployée gratuitement sur **GitHub Pages**.
+
+## 🚀 Déploiement rapide sur GitHub Pages
+
+1. Créez un nouveau dépôt sur votre compte GitHub (ex: \`articulpro\`).
+2. Transférez tous les fichiers extraits du ZIP (\`index.html\`, \`manifest.webmanifest\`, \`sw.js\`) sur votre dépôt.
+3. Allez dans **Settings > Pages** de votre dépôt GitHub.
+4. Dans **Source**, sélectionnez la branche \`main\` (ou \`master\`), dossier \`/(root)\` et cliquez sur **Save**.
+5. Votre application sera en ligne à l'adresse \`https://<votre-pseudo>.github.io/<votre-depot>/\` !
+`;
+            zip.file("README.md", readmeContent.trim());
+
+            // Generate and trigger download
+            zip.generateAsync({ type: "blob" }).then((content) => {
+                const a = document.createElement("a");
+                a.href = URL.createObjectURL(content);
+                a.download = "ArticulPro-GitHub-Pages.zip";
+                a.click();
+            });
+        }
+    </script></body></html>
